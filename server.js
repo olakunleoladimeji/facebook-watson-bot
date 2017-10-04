@@ -41,29 +41,47 @@ app.get("/webhook", function (req, res) {
 
 app.post("/webhook", function (req, res) {
     let messaging_events = req.body.entry[0].messaging;
+    let context = null,
+        contextIndex = 0,
+        anotherContextIndex = 0;
     for (let index = 0; index < messaging_events.length; index++) {
         let event = req.body.entry[0].messaging[index];
         let sender = event.sender.id;
         if (event.message && event.message.text) {
-            let text = event.message.text
+            let text = event.message.text;
+            contexts.forEach(function (value, currIndex, array) {
+                if (value.from == sender) {
+                    context = value.context;
+                    contextIndex = anotherContextIndex
+                }
+                anotherContextIndex++;
+            })
             conversationInstance.message({
                 input: {
                     text: text
                 },
                 workspace_id: process.env.WATSON_WORKSPACE_ID,
-                context: contexts
+                context: context
             }, function (error, response) {
                 if (error) {
                     console.log(error)
                     sendTextMessage(sender, "There was an error returning a response")
                 } else {
+                    if (!context) {
+                        contexts.push({
+                            from: "sender",
+                            context: response.context
+                        })
+                    } else {
+                        contexts[contextIndex].context = response.context
+                    }
                     if (_.find(response.intents, ["intent", "Hello"])) {
                         sendButtonMessage(sender, "Hello, Welcome to MCB. What would you like information about?", [{
                             type: "postback",
                             title: "Private Banking",
                             payload: "I would like to join Private Banking"
                         }, {
-                            type: "postbacl",
+                            type: "postback",
                             title: "Card Issues",
                             payload: "I would like to report card issues"
                         }, {

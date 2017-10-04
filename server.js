@@ -188,6 +188,24 @@ app.post("/webhook", function (req, res) {
                         title: "I'm interested",
                         payload: "I would like to invest but do not have the time or expertise"
                     }])
+                } else if (_.find(response.intents, ["intent", "investmentoptions"])) {
+                    sendQuickReplies(sender, response.output.text[0], [{
+                        content_type: "text",
+                        title: "Rs1,000,000 - Rs5,000,000",
+                        payload: "Between Rs1m and Rs5m"
+                    }, {
+                        content_type: "text",
+                        title: "Rs5,000,000 - Rs10,000,000",
+                        payload: "Between Rs5m and Rs10m"
+                    }, {
+                        content_type: "text",
+                        title: "Rs10,000,000 - Rs15,000,000",
+                        payload: "Between Rs10m and Rs15m"
+                    }, {
+                        content_type: "text",
+                        title: "Rs15,000,000+",
+                        payload: "Rs15m and above"
+                    }])
                 } else {
                     sendTextMessage(sender, response.output.text[0])
                 }

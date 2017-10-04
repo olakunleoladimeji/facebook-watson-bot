@@ -42,8 +42,7 @@ app.get("/webhook", function (req, res) {
 app.post("/webhook", function (req, res) {
     let messaging_events = req.body.entry[0].messaging;
     let context = null,
-        contextIndex = 0,
-        anotherContextIndex = 0;
+        contextIndex = 0;
     console.log(messaging_events);
     for (let index = 0; index < messaging_events.length; index++) {
         let event = req.body.entry[0].messaging[index];
@@ -54,12 +53,12 @@ app.post("/webhook", function (req, res) {
         } else if (event.postback && event.postback.payload) {
             text = event.postback.payload;
         }
-        contexts.forEach(function (value, currIndex, array) {
+        contexts.forEach(function (value, index, array) {
             if (value.from == sender) {
+                console.log("Context here")
                 context = value.context;
-                contextIndex = anotherContextIndex
+                contextIndex = index
             }
-            anotherContextIndex++;
         })
         console.log("Current context is", context)
         conversationInstance.message({
@@ -76,7 +75,7 @@ app.post("/webhook", function (req, res) {
                 console.log(response)
                 if (!context) {
                     contexts.push({
-                        from: "sender",
+                        from: sender,
                         context: response.context
                     })
                 } else {

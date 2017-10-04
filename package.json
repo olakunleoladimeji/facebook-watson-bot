@@ -2,22 +2,33 @@
   "name": "facebook-watson-bot",
   "version": "1.0.0",
   "description": "Chatbot for Facebook that leverages IBM Watson",
-  "main": "app.js",
+  "main": "server.js",
   "dependencies": {
     "body-parser": "^1.15.1",
-    "cfenv": "1.0.3",
+    "dotenv": "4.0.0",
     "express": "4.13.4",
     "request": "^2.72.0",
-    "watson-developer-cloud": "~1.0.6"
+    "watson-developer-cloud": "2.39.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
-  "author": "Niklas Heidloff, @nheidloff, niklas_heidloff@de.ibm.com",
+  "contributors": [
+    {
+      "name": "Saka Arafat",
+      "email": "saka@mft.com",
+      "url": "https://myfunnelteam.com"
+    },
+    {
+      "name": "Olakunle Oladimeji",
+      "email": "kunleoladimeji@gmail.com",
+      "url": "https://olakunle.me"
+    }
+  ],
   "license": "Apache License version 2",
   "repository": {
-    "type": "",
-    "url": "https://github.com/nheidloff/facebook-watson-bot"
+    "type": "git",
+    "url": "https://github.com/SakaArafat/facebook-watson-bot"
   }
 }

@@ -21,21 +21,21 @@ var request = require('request');
 var watson = require('watson-developer-cloud');
 var extend = require('util')._extend;
 
-var watsonDialogCredentials =  extend({
+var watsonDialogCredentials = extend({
   // used when running locally
   url: 'https://gateway.watsonplatform.net/dialog/api',
   username: 'xxx',
   password: 'xxx',
   version: 'v1'
-}, getServiceCredentialsFromBluemix('dialog')); 
+}, getServiceCredentialsFromBluemix('dialog'));
 
-var watsonNLCCredentials =  extend({
+var watsonNLCCredentials = extend({
   // used when running locally
   url: 'https://gateway.watsonplatform.net/natural-language-classifier/api',
   username: 'xxx',
   password: 'xxx',
   version: 'v1'
-}, getServiceCredentialsFromBluemix('natural_language_classifier')); 
+}, getServiceCredentialsFromBluemix('natural_language_classifier'));
 
 // define dialog id here when running locally. when running on Bluemix set an environment variable
 var dialog_id = process.env.DIALOG_ID || 'ebca53c9-6e15-4b5a-b440-8e795efc2d1f';
@@ -71,117 +71,127 @@ app.get('/', function (req, res) {
   res.send('up');
 });
 
-function sendTextMessage(recipient, text) {  
+function sendTextMessage(recipient, text) {
   request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
-    method: 'POST',
-    json: {
-      recipient: {id:recipient},
-      message: {
-        text:text
+      url: 'https://graph.facebook.com/v2.6/me/messages',
+      qs: {
+        access_token: token
+      },
+      method: 'POST',
+      json: {
+        recipient: {
+          id: recipient
+        },
+        message: {
+          text: text
+        }
       }
-    }
-  }, 
-  function(error, response, body) {
-    if (error) {
-      console.log('Error sending message: ', error);
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error);
-    }
-  });
+    },
+    function (error, response, body) {
+      if (error) {
+        console.log('Error sending message: ', error);
+      } else if (response.body.error) {
+        console.log('Error: ', response.body.error);
+      }
+    });
 }
 
 function sendButtonMessage(recipient, text, buttons) {
   request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
-    method: 'POST',
-    json: {
-      recipient: {id:recipient},
-      message: {
-        "attachment":{
-          "type":"template",
-          "payload":{
-            "template_type":"button",
-            "text":text,
-            "buttons": buttons
+      url: 'https://graph.facebook.com/v2.6/me/messages',
+      qs: {
+        access_token: token
+      },
+      method: 'POST',
+      json: {
+        recipient: {
+          id: recipient
+        },
+        message: {
+          "attachment": {
+            "type": "template",
+            "payload": {
+              "template_type": "button",
+              "text": text,
+              "buttons": buttons
+            }
           }
         }
       }
-    }
-  }, 
-  function(error, response, body) {
-    if (error) {
-      console.log('Error sending message: ', error);
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error);
-    }
-  });
+    },
+    function (error, response, body) {
+      if (error) {
+        console.log('Error sending message: ', error);
+      } else if (response.body.error) {
+        console.log('Error: ', response.body.error);
+      }
+    });
 }
 
 function sendGenericTemplateMessageWithTweets(recipient, author, imageUrl, title, url) {
   request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
-    method: 'POST',
-    json: {
-      recipient: {id:recipient},
-      message: {
-        "attachment":{
-          "type":"template",
-          "payload":{
-            "template_type":"generic",
-            "elements": [
-              {
-                "title":author,
-                "image_url":imageUrl,
-                "subtitle":title,
-                "buttons":[
-                  {
-                    "type":"web_url",
-                    "url":url,
-                    "title":"View Tweet"
-                  }           
-                ]
-              }
-            ]
+      url: 'https://graph.facebook.com/v2.6/me/messages',
+      qs: {
+        access_token: token
+      },
+      method: 'POST',
+      json: {
+        recipient: {
+          id: recipient
+        },
+        message: {
+          "attachment": {
+            "type": "template",
+            "payload": {
+              "template_type": "generic",
+              "elements": [{
+                "title": author,
+                "image_url": imageUrl,
+                "subtitle": title,
+                "buttons": [{
+                  "type": "web_url",
+                  "url": url,
+                  "title": "View Tweet"
+                }]
+              }]
+            }
           }
         }
-      }         
-    }
-  }, 
-  function(error, response, body) {
-    if (error) {
-      console.log('Error sending message: ', error);
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error);
-    }
-  });
+      }
+    },
+    function (error, response, body) {
+      if (error) {
+        console.log('Error sending message: ', error);
+      } else if (response.body.error) {
+        console.log('Error: ', response.body.error);
+      }
+    });
 }
 
 function showTweets(recipient, topic, sentiment) {
   request({
-    url: 'http://insights-search.mybluemix.net/api/1/messages/search?q='+ 
-      topic + '%20AND%20posted%3A2016-05-01%20AND%20sentiment%3A' + sentiment,
-    qs: {access_token:token},
-    method: 'GET'
-  }, 
-  function(error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var output = JSON.parse(body);
-      if (output.tweets && output.tweets.length > 2) {
-        for (i = 0; i < 3; i++) { 
-          sendGenericTemplateMessageWithTweets(recipient, 
-            output.tweets[i].message.actor.displayName,
-            output.tweets[i].message.actor.image,
-            output.tweets[i].message.body,
-            output.tweets[i].message.link
+      url: 'http://insights-search.mybluemix.net/api/1/messages/search?q=' +
+        topic + '%20AND%20posted%3A2016-05-01%20AND%20sentiment%3A' + sentiment,
+      qs: {
+        access_token: token
+      },
+      method: 'GET'
+    },
+    function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        var output = JSON.parse(body);
+        if (output.tweets && output.tweets.length > 2) {
+          for (i = 0; i < 3; i++) {
+            sendGenericTemplateMessageWithTweets(recipient,
+              output.tweets[i].message.actor.displayName,
+              output.tweets[i].message.actor.image,
+              output.tweets[i].message.body,
+              output.tweets[i].message.link
             )
+          }
         }
       }
-    }
-  });
+    });
 }
 
 function processDialogResponse(results, sender) {
@@ -205,15 +215,16 @@ function processDialogResponse(results, sender) {
       returnMessage = responseText.substring(0, responseText.indexOf('$'));
       command = responseText.substring(responseText.indexOf('$') + 1, responseText.lastIndexOf('$'));
       details = responseText.substring(responseText.lastIndexOf('$') + 1, responseText.length);
-    }
-    else {
+    } else {
       returnMessage = responseText;
     }
 
-    senders[sender] = { client_id: results.client_id,
-                        conversation_id: results.conversation_id,
-                        classifier_id: classifier_id}
-    
+    senders[sender] = {
+      client_id: results.client_id,
+      conversation_id: results.conversation_id,
+      classifier_id: classifier_id
+    }
+
     if (command) {
       switch (command) {
         case 'ShowButtons':
@@ -223,18 +234,21 @@ function processDialogResponse(results, sender) {
           sendTextMessage(sender, returnMessage);
           eval(details);
           break;
-        }
       }
-      else {
-        sendTextMessage(sender, returnMessage);
-      }
+    } else {
+      sendTextMessage(sender, returnMessage);
+    }
   }
 }
 
 function invokeDialogAndProcessResponse(text, sender) {
   if (text) {
     if (!senders[sender])
-      senders[sender] = { client_id: '', conversation_id: '', classifier_id: ''}
+      senders[sender] = {
+        client_id: '',
+        conversation_id: '',
+        classifier_id: ''
+      }
 
     var params = {
       conversation_id: senders[sender].conversation_id,
@@ -242,22 +256,21 @@ function invokeDialogAndProcessResponse(text, sender) {
       client_id: senders[sender].client_id,
       input: text
     };
-    
-    dialog.conversation(params, function(err, results) {
+
+    dialog.conversation(params, function (err, results) {
       if (err) {
         console.log(err);
         sendTextMessage(sender, "Error occured in Watson Dialog service");
-      }   
-      else {
+      } else {
         processDialogResponse(results, sender);
       }
-    });   
+    });
   }
 }
 
-function processEvent(event) { 
+function processEvent(event) {
   var sender = event.sender.id;
-  
+
   var text;
   if (event.postback && event.postback.payload) {
     text = event.postback.payload;
@@ -265,45 +278,45 @@ function processEvent(event) {
     // system messages when users join and leave conversations. for now I use this workaround
     if (text) {
       if (text === 'hi') {
-        senders[sender] = { client_id: '', conversation_id: '', classifier_id: ''};
+        senders[sender] = {
+          client_id: '',
+          conversation_id: '',
+          classifier_id: ''
+        };
       }
     }
     invokeDialogAndProcessResponse(text, sender);
-  } 
-  else if (event.message && event.message.text) {
+  } else if (event.message && event.message.text) {
     text = event.message.text;
     var classifier_id = senders[sender].classifier_id;
     if (!classifier_id) {
       invokeDialogAndProcessResponse(text, sender);
-    }
-    else {
+    } else {
       natural_language_classifier.classify({
-        text: text,
-        classifier_id: classifier_id},
-        function(err, response) {
+          text: text,
+          classifier_id: classifier_id
+        },
+        function (err, response) {
           if (err) {
             console.log(err);
             sendTextMessage(sender, "Error occured in Watson Natural Language Classifier service");
-          }
-          else {
-            if (response && response.classes && response.classes.length >1) {
+          } else {
+            if (response && response.classes && response.classes.length > 1) {
               console.log('nik text ' + text);
               console.log('nik conf ' + response.classes[0].confidence);
               console.log('nik class_name ' + response.classes[0].class_name);
               if (response.classes[0].confidence > 0.7) {
                 invokeDialogAndProcessResponse(response.classes[0].class_name, sender);
-              }
-              else {
+              } else {
                 invokeDialogAndProcessResponse(text, sender);
               }
-            }
-            else {
+            } else {
               invokeDialogAndProcessResponse(text, sender);
             }
           }
         });
-      }
     }
+  }
 }
 
 app.post('/webhook/', function (req, res) {
@@ -332,6 +345,6 @@ function getServiceCredentialsFromBluemix(name) {
   return {};
 };
 
-app.listen(appEnv.port, appEnv.bind, function() {
+app.listen(appEnv.port, appEnv.bind, function () {
   console.log('listening on port ' + appEnv.port);
 });

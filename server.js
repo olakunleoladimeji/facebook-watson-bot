@@ -127,7 +127,7 @@ app.post("/webhook", function (req, res) {
                         title: "No",
                         payload: "No"
                     }])
-                } else if (_.find(response.intents, ["intent", "residentstatus"]) && response.context.account && (response.context.monthly != "yes" && response.context.monthly != "Yes")) {
+                } else if (_.find(response.intents, ["intent", "YESaccount"])) {
                     sendQuickReplies(sender, response.output.text[0], [{
                         content_type: "text",
                         title: "Rs75,000- 150,000",
@@ -141,7 +141,7 @@ app.post("/webhook", function (req, res) {
                         title: "Rs300,000 onwards",
                         payload: "Rs300,000 onwards"
                     }])
-                } else if (_.find(response.intents, ["intent", "Hello"]) && response.entities[0].entity == "Yearlyincome") {
+                } else if (_.find(response.intents, ["intent", "Investmentamount"])) {
                     sendQuickReplies(sender, response.output.text[0], [{
                         content_type: "text",
                         title: "Rs1,000,000- Rs2,000,000",
@@ -154,6 +154,30 @@ app.post("/webhook", function (req, res) {
                         content_type: "text",
                         title: "Rs3,000,000+",
                         payload: "Rs3m upwards"
+                    }])
+                } else if (_.find(response.entities, ["entity", "Investment"])) {
+                    sendQuickReplies(sender, response.output.text[0], [{
+                        content_type: "text",
+                        title: "Yes",
+                        payload: "Yesinvest"
+                    }, {
+                        content_type: "text",
+                        title: "Yes",
+                        payload: "Noinvest"
+                    }])
+                } else if (_.find(response.intents, ["intent", "investmentoptions"])) {
+                    sendQuickReplies(sender, response.output.text[0], [{
+                        content_type: "text",
+                        title: "Not Interested",
+                        payload: "I already have a portfolio of investments"
+                    }, {
+                        content_type: "text",
+                        title: "Might be Interested",
+                        payload: "I am an active investor who follows the markets regularly"
+                    }, {
+                        content_type: "text",
+                        title: "I'm interested",
+                        payload: "I would like to invest but do not have the time or expertise"
                     }])
                 } else {
                     sendTextMessage(sender, response.output.text[0])

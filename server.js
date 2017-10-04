@@ -96,24 +96,24 @@ app.post("/webhook", function (req, res) {
                         payload: "Internet Login"
                     }])
                 } else if (_.find(response.intents, ["intent", "PrivateBanking"])) {
-                    sendButtonMessage(sender, `${response.output.text[0]} \n Ok first and foremost, what is your resident status?`, [{
-                        type: "postback",
+                    sendQuickReplies(sender, `${response.output.text[0]} \n Ok first and foremost, what is your resident status?`, [{
+                        content_type: "text",
                         title: `Mauritian Resident`,
                         payload: "Mauritian living in Mauritius"
                     }, {
-                        type: "postback",
+                        content_type: "text",
                         title: "Non-Resident Mauritian",
                         payload: "Mauritian living abroad"
                     }, {
-                        type: "postback",
+                        content_type: "text",
                         title: "Foreigner living abroad",
                         payload: "Foreigner living abroad"
                     }, {
-                        type: "postback",
-                        title: "Foreigner looking to move to Mauritius",
+                        content_type: "text",
+                        title: "Foreigner interested in Mauritius",
                         payload: "Foreigner looking to move to Mauritius"
                     }, {
-                        type: "postback",
+                        content_type: "text",
                         title: "Expat in Mauritius",
                         payload: "Expat working in Mauritius"
                     }])
@@ -182,6 +182,33 @@ function sendButtonMessage(recipient, text, buttons) {
                         buttons: buttons
                     }
                 }
+            }
+        }
+    }, function (error, response, body) {
+        if (error)
+            console.log("Error sending message: ", error)
+        else if (response.body.error)
+            console.log("Error: ", response.body.error)
+    })
+}
+
+/**
+ * 
+ * @param {number} recipient 
+ * @param {string} text 
+ * @param {Array<JSON>} quick_replies 
+ */
+function sendQuickReplies(recipient, text, quick_replies) {
+    request({
+        method: "POST",
+        url: "https://graph.facebook.com/v2.6/me/messages",
+        qs: {
+            access_token: token
+        },
+        json: {
+            message: {
+                text: text,
+                quick_replies: quick_replies
             }
         }
     }, function (error, response, body) {

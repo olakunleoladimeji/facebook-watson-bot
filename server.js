@@ -61,6 +61,7 @@ app.post("/webhook", function (req, res) {
             }
             anotherContextIndex++;
         })
+        console.log("Current context is", context)
         conversationInstance.message({
             input: {
                 text: text

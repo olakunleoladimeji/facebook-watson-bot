@@ -44,10 +44,10 @@ app.get("/webhook", function (req, res) {
 })
 
 app.post("/webhook", function (req, res) {
-    let messaging_events = req.body.entry[0].messaging;
+    let messaging_events = req.body.entry[0].messaging || [];
     let context = null,
         contextIndex = 0;
-    winston.log("info", messaging_events)
+    console.log(JSON.stringify(messaging_events))
     // console.log(messaging_events);
     for (let index = 0; index < messaging_events.length; index++) {
         let event = req.body.entry[0].messaging[index];

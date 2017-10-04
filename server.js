@@ -81,7 +81,7 @@ app.post("/webhook", function (req, res) {
                 } else {
                     contexts[contextIndex].context = response.context
                 }
-                if (_.find(response.intents, ["intent", "Hello"]) && response.entities[0].entity != "Yearlyincome") {
+                if (_.find(response.intents, ["intent", "Hello"]) && _.isEmpty(response.entities)) {
                     sendButtonMessage(sender, "Hello, Welcome to MCB. Would you like information regarding any of the following?", [{
                         type: "postback",
                         title: "Private Banking",

@@ -81,7 +81,7 @@ app.post("/webhook", function (req, res) {
                 } else {
                     contexts[contextIndex].context = response.context
                 }
-                if (_.find(response.intents, ["intent", "Hello"])) {
+                if (_.find(response.intents, ["intent", "Hello"]) && response.entities[0].entity != "Yearlyincome") {
                     sendButtonMessage(sender, "Hello, Welcome to MCB. Would you like information regarding any of the following?", [{
                         type: "postback",
                         title: "Private Banking",
@@ -118,7 +118,7 @@ app.post("/webhook", function (req, res) {
                         payload: "Expat working in Mauritius"
                     }])
                 } else if (_.find(response.intents, ["intent", "residentstatus"]) && response.context.account) {
-                    sendQuickReplies(sender, response.output.text[0], [{
+                    sendQuickReplies(sender, "Do you by any chance already have an account at MCB", [{
                         content_type: "text",
                         title: "Yes",
                         payload: "Yes"
@@ -126,6 +126,34 @@ app.post("/webhook", function (req, res) {
                         content_type: "text",
                         title: "No",
                         payload: "No"
+                    }])
+                } else if (_.find(response.intents, ["intent", "residentstatus"]) && response.context.account && (response.context.monthly != "yes" && response.context.monthly != "Yes")) {
+                    sendQuickReplies(sender, response.output.text[0], [{
+                        content_type: "text",
+                        title: "Rs75,000- 150,000",
+                        payload: "Rs75,000- 150,000"
+                    }, {
+                        content_type: "text",
+                        title: "Rs150,000- 300,000",
+                        payload: "Rs150,000- 300,000"
+                    }, {
+                        content_type: "text",
+                        title: "Rs300,000 onwards",
+                        payload: "Rs300,000 onwards"
+                    }])
+                } else if (_.find(response.intents, ["intent", "Hello"]) && response.entities[0].entity == "Yearlyincome") {
+                    sendQuickReplies(sender, response.output.text[0], [{
+                        content_type: "text",
+                        title: "Rs1,000,000- Rs2,000,000",
+                        payload: "Rs1m to Rs2m"
+                    }, {
+                        content_type: "text",
+                        title: "Rs2,000,000-Rs3,000,000",
+                        payload: "Rs2m to Rs3m"
+                    }, {
+                        content_type: "text",
+                        title: "Rs3,000,000+",
+                        payload: "Rs3m upwards"
                     }])
                 } else {
                     sendTextMessage(sender, response.output.text[0])

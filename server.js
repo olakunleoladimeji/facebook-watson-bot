@@ -174,7 +174,7 @@ app.post("/webhook", function (req, res) {
                         title: "No",
                         payload: "Noinvest"
                     }])
-                } else if (_.find(response.intents, ["intent", "Yesinvest"])) {
+                } else if (_.find(response.entities, ["entity", "Investment"])) {
                     sendQuickReplies(sender, response.output.text[0], [{
                         content_type: "text",
                         title: "Not Interested",

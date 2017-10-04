@@ -164,7 +164,7 @@ app.post("/webhook", function (req, res) {
                         title: "Rs3,000,000+",
                         payload: "Rs3m upwards"
                     }])
-                } else if (_.find(response.entities, ["entity", "Investment"])) {
+                } else if (_.find(response.entities, ["entity", "Yearlyincome"])) {
                     sendQuickReplies(sender, response.output.text[0], [{
                         content_type: "text",
                         title: "Yes",

@@ -47,7 +47,7 @@ app.post("/webhook", function (req, res) {
     let messaging_events = req.body.entry[0].messaging;
     let context = null,
         contextIndex = 0;
-    winston.debug(messaging_events);
+    winston.log("info", messaging_events)
     // console.log(messaging_events);
     for (let index = 0; index < messaging_events.length; index++) {
         let event = req.body.entry[0].messaging[index];

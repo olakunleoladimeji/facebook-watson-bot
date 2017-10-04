@@ -95,7 +95,7 @@ app.post("/webhook", function (req, res) {
                         title: "Juice/Internet Banking",
                         payload: "Internet Login"
                     }])
-                } else if (_.find(response.intents, ["intent", "Hello"])) {
+                } else if (_.find(response.intents, ["intent", "PrivateBanking"])) {
                     sendButtonMessage(sender, `${response.output.text[0]} \n Ok first and foremost, what is your resident status?`, [{
                         type: "postback",
                         title: `Mauritian Resident`,
@@ -118,7 +118,7 @@ app.post("/webhook", function (req, res) {
                         payload: "Expat working in Mauritius"
                     }])
                 } else {
-                    sendTextMessage(sender, response.output.text[0])
+                    sendTextMessage(sender, "Hello, Welcome to MCB. Would you like information regarding any of the following?")
                 }
             }
         })

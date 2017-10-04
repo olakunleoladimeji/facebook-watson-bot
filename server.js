@@ -171,7 +171,7 @@ app.post("/webhook", function (req, res) {
                         payload: "Yesinvest"
                     }, {
                         content_type: "text",
-                        title: "Yes",
+                        title: "No",
                         payload: "Noinvest"
                     }])
                 } else if (_.find(response.intents, ["intent", "investmentoptions"])) {

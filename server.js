@@ -57,6 +57,8 @@ app.post("/webhook", function (req, res) {
             text = event.message.text;
         } else if (event.postback && event.postback.payload) {
             text = event.postback.payload;
+        } else if (event.quick_reply && event.quick_reply.payload) {
+            text = event.quick_reply.payload;
         }
         contexts.forEach(function (value, index, array) {
             if (value.from == sender) {

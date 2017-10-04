@@ -48,56 +48,58 @@ app.post("/webhook", function (req, res) {
     for (let index = 0; index < messaging_events.length; index++) {
         let event = req.body.entry[0].messaging[index];
         let sender = event.sender.id;
+        let text = ""
         if (event.message && event.message.text) {
-            let text = event.message.text;
-            contexts.forEach(function (value, currIndex, array) {
-                if (value.from == sender) {
-                    context = value.context;
-                    contextIndex = anotherContextIndex
-                }
-                anotherContextIndex++;
-            })
-            conversationInstance.message({
-                input: {
-                    text: text
-                },
-                workspace_id: process.env.WATSON_WORKSPACE_ID,
-                context: context
-            }, function (error, response) {
-                if (error) {
-                    console.log(error)
-                    sendTextMessage(sender, "There was an error returning a response")
-                } else {
-                    if (!context) {
-                        contexts.push({
-                            from: "sender",
-                            context: response.context
-                        })
-                    } else {
-                        contexts[contextIndex].context = response.context
-                    }
-                    if (_.find(response.intents, ["intent", "Hello"])) {
-                        sendButtonMessage(sender, "Hello, Welcome to MCB. What would you like information about?", [{
-                            type: "postback",
-                            title: "Private Banking",
-                            payload: "I would like to join Private Banking"
-                        }, {
-                            type: "postback",
-                            title: "Card Issues",
-                            payload: "I would like to report card issues"
-                        }, {
-                            type: "postback",
-                            title: "Juice/Internet Banking",
-                            payload: "Internet Login"
-                        }])
-                    } else {
-                        sendTextMessage(sender, response.output.text[0])
-                    }
-                }
-            })
+            text = event.message.text;
         } else if (event.postback && event.postback.payload) {
-
+            text = event.postback.payload;
         }
+        contexts.forEach(function (value, currIndex, array) {
+            if (value.from == sender) {
+                context = value.context;
+                contextIndex = anotherContextIndex
+            }
+            anotherContextIndex++;
+        })
+        conversationInstance.message({
+            input: {
+                text: text
+            },
+            workspace_id: process.env.WATSON_WORKSPACE_ID,
+            context: context
+        }, function (error, response) {
+            if (error) {
+                console.log(error)
+                sendTextMessage(sender, "There was an error returning a response")
+            } else {
+                console.log(response)
+                if (!context) {
+                    contexts.push({
+                        from: "sender",
+                        context: response.context
+                    })
+                } else {
+                    contexts[contextIndex].context = response.context
+                }
+                if (_.find(response.intents, ["intent", "Hello"])) {
+                    sendButtonMessage(sender, "Hello, Welcome to MCB. What would you like information about?", [{
+                        type: "postback",
+                        title: "Private Banking",
+                        payload: "I would like to join Private Banking"
+                    }, {
+                        type: "postback",
+                        title: "Card Issues",
+                        payload: "I would like to report card issues"
+                    }, {
+                        type: "postback",
+                        title: "Juice/Internet Banking",
+                        payload: "Internet Login"
+                    }])
+                } else {
+                    sendTextMessage(sender, response.output.text[0])
+                }
+            }
+        })
 
     }
     res.sendStatus(200);

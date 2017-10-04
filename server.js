@@ -50,7 +50,7 @@ app.post("/webhook", function (req, res) {
                 input: {
                     text: text,
                     context: contexts,
-                    workspace_id: process.env.WATSON_WORKSPACE_ID
+                    workspace_id: process.env.WATSON_WORKSPACE_ID || "b354d966-b5ea-4036-b319-f6705d7e098b"
                 }
             }, function (error, response) {
                 if (error) {

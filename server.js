@@ -117,6 +117,16 @@ app.post("/webhook", function (req, res) {
                         title: "Expat in Mauritius",
                         payload: "Expat working in Mauritius"
                     }])
+                } else if (_.find(response.intents, ["intent", "residentstatus"]) && response.context.account) {
+                    sendQuickReplies(sender, response.output.text[0], [{
+                        content_type: "text",
+                        title: "Yes",
+                        payload: "Yes"
+                    }, {
+                        content_type: "text",
+                        title: "No",
+                        payload: "No"
+                    }])
                 } else {
                     sendTextMessage(sender, response.output.text[0])
                 }

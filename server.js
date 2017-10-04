@@ -3,13 +3,17 @@ const express = require("express"),
     dotenv = require("dotenv"),
     watson = require("watson-developer-cloud"),
     request = require("request"),
-    _ = require("lodash");
+    _ = require("lodash"),
+    debug = require("debug")("mcb-bot-messenger"),
+    winston = require("winston");
 
 const config = dotenv.config();
 
 if (config.error) {
     throw config.error;
 }
+// Start debug instance
+
 let app = express();
 
 let contexts = [];
@@ -43,7 +47,8 @@ app.post("/webhook", function (req, res) {
     let messaging_events = req.body.entry[0].messaging;
     let context = null,
         contextIndex = 0;
-    console.log(messaging_events);
+    winston.debug(messaging_events);
+    // console.log(messaging_events);
     for (let index = 0; index < messaging_events.length; index++) {
         let event = req.body.entry[0].messaging[index];
         let sender = event.sender.id;

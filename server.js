@@ -82,7 +82,7 @@ app.post("/webhook", function (req, res) {
                     contexts[contextIndex].context = response.context
                 }
                 if (_.find(response.intents, ["intent", "Hello"])) {
-                    sendButtonMessage(sender, response.output.text[0], [{
+                    sendButtonMessage(sender, "Hello, Welcome to MCB. Would you like information regarding any of the following?", [{
                         type: "postback",
                         title: "Private Banking",
                         payload: "I would like to join Private Banking"
@@ -118,7 +118,7 @@ app.post("/webhook", function (req, res) {
                         payload: "Expat working in Mauritius"
                     }])
                 } else {
-                    sendTextMessage(sender, "Hello, Welcome to MCB. Would you like information regarding any of the following?")
+                    sendTextMessage(sender, response.output.text[0])
                 }
             }
         })
@@ -206,6 +206,9 @@ function sendQuickReplies(recipient, text, quick_replies) {
             access_token: token
         },
         json: {
+            recipient: {
+                id: recipient
+            },
             message: {
                 text: text,
                 quick_replies: quick_replies

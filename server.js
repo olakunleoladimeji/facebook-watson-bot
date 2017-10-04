@@ -127,7 +127,7 @@ app.post("/webhook", function (req, res) {
                         title: "No",
                         payload: "No"
                     }])
-                } else if (_.find(response.intents, ["intent", "residentstatus"]) && response.context.account && (response.context.monthly != "yes" && response.context.monthly != "Yes")) {
+                } else if (_.find(response.intents, ["intent", "residentstatus"]) && response.context.account) {
                     sendQuickReplies(sender, response.output.text[0], [{
                         content_type: "text",
                         title: "Rs75,000- 150,000",

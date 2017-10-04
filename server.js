@@ -82,7 +82,7 @@ app.post("/webhook", function (req, res) {
                     contexts[contextIndex].context = response.context
                 }
                 if (_.find(response.intents, ["intent", "Hello"])) {
-                    sendButtonMessage(sender, "Hello, Welcome to MCB. What would you like information about?", [{
+                    sendButtonMessage(sender, response.output.text[0], [{
                         type: "postback",
                         title: "Private Banking",
                         payload: "I would like to join Private Banking"
@@ -94,6 +94,28 @@ app.post("/webhook", function (req, res) {
                         type: "postback",
                         title: "Juice/Internet Banking",
                         payload: "Internet Login"
+                    }])
+                } else if (_.find(response.intents, ["intent", "Hello"])) {
+                    sendButtonMessage(sender, `${response.output.text[0]} \n Ok first and foremost, what is your resident status?`, [{
+                        type: "postback",
+                        title: `Mauritian Resident`,
+                        payload: "Mauritian living in Mauritius"
+                    }, {
+                        type: "postback",
+                        title: "Non-Resident Mauritian",
+                        payload: "Mauritian living abroad"
+                    }, {
+                        type: "postback",
+                        title: "Foreigner living abroad",
+                        payload: "Foreigner living abroad"
+                    }, {
+                        type: "postback",
+                        title: "Foreigner looking to move to Mauritius",
+                        payload: "Foreigner looking to move to Mauritius"
+                    }, {
+                        type: "postback",
+                        title: "Expat in Mauritius",
+                        payload: "Expat working in Mauritius"
                     }])
                 } else {
                     sendTextMessage(sender, response.output.text[0])

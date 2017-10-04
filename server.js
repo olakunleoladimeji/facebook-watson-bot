@@ -33,8 +33,10 @@ app.get('/', function (req, res) {
 app.get("/webhook", function (req, res) {
     if (req.query['hub.verify_token'] === secret) {
         res.send(req.query['hub.challenge']);
+    } else {
+        res.send('Error, wrong validation token');
+
     }
-    res.send('Error, wrong validation token');
 })
 
 app.post("/webhook", function (req, res) {
@@ -51,9 +53,10 @@ app.post("/webhook", function (req, res) {
                     workspace_id: process.env.WATSON_WORKSPACE_ID
                 }
             }, function (error, response) {
-                if (error)
+                if (error) {
+                    console.log(error)
                     sendTextMessage(sender, "There was an error returning a response")
-                else {
+                } else {
                     if (_.find(response.intents, ["intent", "Hello"])) {
                         sendButtonMessage(sender, "Hello, Welcome to MCB. What would you like information about?", [{
                             type: "postback",

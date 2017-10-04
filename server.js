@@ -117,7 +117,7 @@ app.post("/webhook", function (req, res) {
                         title: "Expat in Mauritius",
                         payload: "Expat working in Mauritius"
                     }])
-                } else if (_.find(response.intents, ["intent", "residentstatus"]) && response.context.account) {
+                } else if (_.find(response.intents, ["intent", "residentstatus"])) {
                     sendQuickReplies(sender, "Do you by any chance already have an account at MCB", [{
                         content_type: "text",
                         title: "Yes",
@@ -127,7 +127,7 @@ app.post("/webhook", function (req, res) {
                         title: "No",
                         payload: "No"
                     }])
-                } else if (_.find(response.intents, ["intent", "residentstatus"]) && response.context.account) {
+                } else if (_.find(response.intents, ["intent", "residentstatus"]) && response.context.account && (response.context.monthly != "yes" && response.context.monthly != "Yes")) {
                     sendQuickReplies(sender, response.output.text[0], [{
                         content_type: "text",
                         title: "Rs75,000- 150,000",
